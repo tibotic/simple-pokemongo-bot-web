@@ -7,3 +7,9 @@ var userInfo = {
     botPath: true,
     actionsEnabled: true
 };
+
+var dataUpdates = {
+    updateTrainer: 1000,
+    addCatchable: 1000,
+    addInventory: 5000
+};

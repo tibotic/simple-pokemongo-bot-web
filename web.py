@@ -1,7 +1,7 @@
 import os
 import glob
 import re
-from flask import Flask,jsonify, json, render_template, send_file
+from flask import Flask,jsonify, json, render_template, send_file, request
 
 # app = Flask(__name__)
 #
@@ -52,6 +52,31 @@ def index():
 @app.route("/socket.io/", methods=["GET", "POST"])
 def socket_io():
     return "" 
+
+@app.route("/cc/report", methods=["POST"])
+def cc_report():
+    data = request.json
+    user_web_location = "web_data/location-%s.json" % data['username']
+    user_web_inventory = "web_data/inventory-%s.json" % data['username']
+    try:
+        with open(user_web_location, 'w') as outfile:
+            json.dump(data['location'], outfile)
+
+        with open(user_web_inventory, 'w') as outfile:
+            json.dump(data['inventory'], outfile)
+        if len(data['catchable_pokemons'])>0:
+            user_web_catchable = "web_data/catchable-{}.json".format(data["username"])
+            with open(user_web_catchable, 'w') as outfile:
+                json.dump(data["catchable_pokemons"][0], outfile)
+                
+    except IOError as e:
+        self.logger.info('[x] Error while opening location file: %s' % e)
+
+        
+
+
+
+    return ""
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8000)
